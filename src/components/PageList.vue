@@ -2,6 +2,7 @@
   <PostList v-if="postSelected != null" :page="list[postSelected]" :userToken="token" @close="closePost" />
   <main>
     <h3>Page List</h3>
+    <p>only pages that you have granted access to will appear</p>
     <div class="table-container">
       <table>
         <tr>
@@ -78,7 +79,7 @@ main {
 }
 
 .table-container {
-  max-height: calc(90vh - 48px - 4.8em);
+  max-height: calc(90vh - 48px - 6.5em);
   overflow-y: scroll;
   overflow-x: hidden;
   padding-right: 0.3em;
@@ -90,5 +91,10 @@ td:first-child {
 
 a.button {
   margin: 0.2rem 0;
+}
+
+h3 {
+  line-height: 1;
+  margin-bottom: 0.1em;
 }
 </style>
