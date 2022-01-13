@@ -6,7 +6,7 @@
     <div class="table-container">
       <table>
         <tr>
-          <th>Index</th>
+          <th></th>
           <th>Name</th>
           <th>Identifier</th>
         </tr>
@@ -79,7 +79,7 @@ export default {
 }
 
 .table-container {
-  max-height: calc(90vh - 48px - 4.8em);
+  max-height: calc(84vh - 48px - 4.8em);
   overflow-y: scroll;
   overflow-x: hidden;
   padding-right: 0.3em;
@@ -87,6 +87,11 @@ export default {
 
 td:first-child {
   width: 1px;
+}
+
+h3 {
+  line-height: 1;
+  margin-bottom: 0.1em;
 }
 
 a.button {

@@ -1,8 +1,8 @@
 const fetch = require("node-fetch");
 export default async function handler(req, res) {
   const { code, redirect } = req.query;
-  const APP_ID = "***REMOVED***";
-  const APP_SECRET = "***REMOVED***";
+  const APP_ID = "317535696937100";
+  const APP_SECRET = "03f3f6a0f24c6c6de12e3bf11c3f7407";
   let data = await fetch(
     `https://graph.facebook.com/v12.0/oauth/access_token?client_id=${APP_ID}&redirect_uri=${redirect}&client_secret=${APP_SECRET}&code=${code}`
   );
