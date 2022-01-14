@@ -1,8 +1,8 @@
 <template>
-  <NavBar :isLoggedIn="isLoggedIn" @logOut="logOut" />
-  <AuthModal v-if="!isLoggedIn" />
-  <PageList :token="token" :id="id" v-else />
-  <footer>&copy; 2021 Epic Cybernetics - built with <a href="https://vuejs.org" target="_blank">Vue.js</a></footer>
+<NavBar :isLoggedIn="isLoggedIn" @logOut="logOut" />
+<AuthModal v-if="!isLoggedIn" />
+<PageList :token="token" :id="id" v-else />
+<footer>&copy; 2021 Epic Cybernetics - built with <a href="https://vuejs.org" target="_blank">Vue.js</a></footer>
 </template>
 
 <script>
@@ -46,24 +46,24 @@ export default {
 }
 
 footer {
- position: absolute;
- padding: 1em;
- bottom: 0;
- left: 2.5vw;
- width: calc(100% - 2.5vw);
+  position: absolute;
+  padding: 1em;
+  bottom: 0;
+  left: 2.5vw;
+  width: calc(100% - 2.5vw);
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 }
- 
+
 ::-webkit-scrollbar-track {
-    background-color: transparent;
-    border-radius: 100px;
+  background-color: transparent;
+  border-radius: 100px;
 }
- 
+
 ::-webkit-scrollbar-thumb {
-    background-color: #ca0029;
-    border-radius: 100px;
+  background-color: #ca0029;
+  border-radius: 100px;
 }
 </style>
