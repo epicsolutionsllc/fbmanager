@@ -1,8 +1,9 @@
 const fetch = require("node-fetch");
 export default async function handler(req, res) {
-  const { token, id } = req.query;
-  const APP_ID = "***REMOVED***";
-  const APP_SECRET = "***REMOVED***";
+  const {
+    token,
+    id
+  } = req.query;
   let fbUserPages = await fetch(
     `https://graph.facebook.com/${id}/accounts?fields=name,access_token&access_token=${token}&limit=100`
   );

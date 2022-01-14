@@ -11,7 +11,7 @@ export default {
   methods: {
     logIn() {
       let app = `https://${window.location.host}/`;
-      let url = `https://www.facebook.com/v12.0/dialog/oauth?client_id=***REMOVED***&redirect_uri=${encodeURI(
+      let url = `https://www.facebook.com/v12.0/dialog/oauth?client_id=317535696937100&redirect_uri=${encodeURI(
         app
       )}&scope=pages_show_list,pages_read_engagement,pages_manage_posts,public_profile,pages_read_user_content`;
       window.location.replace(url);
