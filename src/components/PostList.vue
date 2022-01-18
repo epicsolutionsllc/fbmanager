@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <a @click="$emit('close')" class="button">Close</a>
+    <a @click="$emit('close')" class="button button-close">Close</a>
     <h3>Post List</h3>
     <p>{{ page.name }}</p>
     <div class="table-container">
@@ -18,30 +18,63 @@
           <td>{{ page.id }}</td>
         </tr>
       </table>
+      <ContentLoader v-if="loading" />
+      <a @click="checkForMore" class="button button-outline" v-if="!loading && areMore">Load More</a>
     </div>
   </div>
 </template>
 
 <script>
+import ContentLoader from "./ContentLoader.vue";
 export default {
   name: "PostList",
+  components: {
+    ContentLoader,
+  },
   props: {
     page: Object,
-    userToken: String
   },
   emits: ["close"],
   methods: {
     openPage(i) {
       this.list[i].selected = true;
     },
+    checkForMore() {
+      this.loading = true;
+      if (this.areMore == true) {
+        fetch(this.nextUrl)
+          .then((response) => {
+            if (response.status == 200) {
+              return response.json();
+            } else {
+              alert("You don't have any pages connected to your account.");
+              return {};
+            }
+          })
+          .then((json) => {
+            console.log(json);
+            json.data.forEach((item) => {
+              this.list.push(item);
+            });
+            if (json.paging.next) {
+              this.areMore = true;
+              this.nextUrl = json.paging.next;
+            }
+            this.loading = false;
+          });
+      }
+    },
   },
   data() {
     return {
       list: [],
+      areMore: false,
+      nextUrl: "",
+      loading: true
     };
   },
   mounted() {
-    console.log(`PAGE: `, this.page.access_token)
+    console.log(`PAGE: `, this.page.access_token);
     fetch(`/api/getposts?token=${this.page.access_token}&page=${this.page.id}`)
       .then((response) => {
         if (response.status == 200) {
@@ -52,7 +85,13 @@ export default {
         }
       })
       .then((json) => {
+        console.log(json);
         this.list = json.data;
+        if (json.paging.next) {
+          this.areMore = true;
+          this.nextUrl = json.paging.next;
+        }
+        this.loading = false;
       });
   },
 };
@@ -83,6 +122,7 @@ export default {
   overflow-y: scroll;
   overflow-x: hidden;
   padding-right: 0.3em;
+  padding-bottom: 0.2em;
 }
 
 td:first-child {
@@ -94,7 +134,7 @@ h3 {
   margin-bottom: 0.1em;
 }
 
-a.button {
+a.button-close {
   float: right;
   position: absolute;
   top: 10px;
