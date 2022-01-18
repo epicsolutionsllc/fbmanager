@@ -1,23 +1,24 @@
 # fbmanager
+Better alternative to Facebook Business Dashboard, powered by Vercel Serverless Functions and Vue 3
 
 ## Project setup
-```
-npm install
+```bash
+$ npm install
 ```
 
 ### Compiles and hot-reloads for development
-```
-npm run serve
+```bash
+$ vercel dev
 ```
 
-### Compiles and minifies for production
-```
-npm run build
+### Push to production
+```bash
+$ vercel --prod
 ```
 
 ### Lints and fixes files
-```
-npm run lint
+```bash
+$ npm run lint
 ```
 
 ### Customize configuration
