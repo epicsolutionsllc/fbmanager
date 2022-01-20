@@ -5,7 +5,6 @@ export default async function handler(req, res) {
     `https://graph.facebook.com/v12.0/${page}/feed?access_token=${token}`
   );
   posts = await posts.json();
-  console.log(JSON.stringify(posts))
   if (posts.length < 1) {
     res.status(301);
   } else {

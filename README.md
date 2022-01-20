@@ -2,8 +2,14 @@
 Better alternative to Facebook Business Dashboard, powered by Vercel Serverless Functions and Vue 3
 
 ## Project setup
+Install dependencies:
 ```bash
 $ npm install
+```
+Set environment variables
+```
+APP_ID     --> Facebook API app ID
+APP_SECRET --> Facebook API app secret
 ```
 
 ### Compiles and hot-reloads for development

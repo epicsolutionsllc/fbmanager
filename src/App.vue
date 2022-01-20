@@ -2,7 +2,7 @@
 <NavBar :isLoggedIn="isLoggedIn" @logOut="logOut" />
 <AuthModal v-if="!isLoggedIn" />
 <PageList :token="token" :id="id" v-else />
-<footer>&copy; 2021 Epic Cybernetics - built with <a href="https://vuejs.org" target="_blank">Vue.js</a></footer>
+<footer>&copy; 2022 Epic Cybernetics - built with <a href="https://vuejs.org" target="_blank">Vue.js</a></footer>
 </template>
 
 <script>
@@ -65,5 +65,9 @@ footer {
 ::-webkit-scrollbar-thumb {
   background-color: #ca0029;
   border-radius: 100px;
+}
+
+footer a {
+  color: #ca0029;
 }
 </style>

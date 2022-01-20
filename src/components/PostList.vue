@@ -1,6 +1,24 @@
 <template>
+  <AlertPopup
+    v-if="showAlert"
+    :choices="alertChoices"
+    :description="alertDescription"
+    @choice="choose($event)"
+    :action="alertAction"
+  />
   <div class="modal">
-    <a @click="$emit('close')" class="button button-close">Close</a>
+    <div class="top-buttons">
+      <a @click="confirmAction('purge')" class="button button-outline" v-if="selected.length > 0"
+        >Purge</a
+      >
+      <a
+        @click="confirmAction('delete')"
+        class="button button-outline"
+        v-if="selected.length > 0"
+        >Delete</a
+      >
+      <a @click="$emit('close')" class="button button-close">Close</a>
+    </div>
     <h3>Post List</h3>
     <p>{{ page.name }}</p>
     <div class="table-container">
@@ -10,26 +28,45 @@
           <th>Name</th>
           <th>Identifier</th>
         </tr>
-        <tr v-for="page in list" :key="page.id">
+        <tr v-for="(post, i) in list" :key="post.id">
           <td>
-            <input type="checkbox" />
+            <input type="checkbox" @change="selectPost(i, $event)" />
           </td>
-          <td>{{ page.story || page.message }}</td>
-          <td>{{ page.id }}</td>
+          <td>
+            <div
+              class="cell-content"
+              :title="genTitle(post) + '\n\nClick to open in new tab'"
+            >
+              <a :href="`https://facebook.com/${post.id}`" target="_blank">{{
+                genTitle(post)
+              }}</a>
+            </div>
+          </td>
+          <td>
+            <div class="cell-content" :title="post.id">{{ post.id }}</div>
+          </td>
         </tr>
       </table>
       <ContentLoader v-if="loading" />
-      <a @click="checkForMore" class="button button-outline" v-if="!loading && areMore">Load More</a>
+      <a
+        @click="checkForMore"
+        class="button button-outline"
+        v-if="!loading && areMore"
+        >Load More</a
+      >
     </div>
   </div>
+  <div class="modal-shade" @click="$emit('close')"></div>
 </template>
 
 <script>
 import ContentLoader from "./ContentLoader.vue";
+import AlertPopup from "./AlertPopup.vue";
 export default {
   name: "PostList",
   components: {
     ContentLoader,
+    AlertPopup,
   },
   props: {
     page: Object,
@@ -64,13 +101,64 @@ export default {
           });
       }
     },
+    genTitle(post) {
+      const title = post.story || post.message;
+      if (!title || title.length < 1) {
+        return "[no title]";
+      } else {
+        return title;
+      }
+    },
+    selectPost(i, e) {
+      if (e.target.checked) {
+        this.selected.push(i);
+      } else {
+        this.selected.pop(this.selected.indexOf(i));
+      }
+      console.log(this.selected);
+    },
+    confirmAction(a) {
+      this.alertAction = a;
+      if (a == "delete") {
+        this.alertChoices = ["Cancel", "Confirm"];
+        this.alertDescription =
+          "This will fully delete all of the posts you have selected.";
+        this.showAlert = true;
+      } else if (a == "purge") {
+        this.alertChoices = ["Go back", "Continue"];
+        this.alertDescription = "This will delete ALL POSTS older than the most recent selected post.  Proceed with extreme caution.";
+        this.showAlert = true;
+      }
+    },
+    choose(c) {
+      const a = c.action;
+      c = c.val;
+      this.showAlert = false;
+      if (a == "delete" && c == 1) {
+        this.deletePosts();
+      } else if (a == "purge" && c == 1) {
+        this.purge();
+      }
+    },
+    deletePosts() {
+      alert("Delete code runs now.");
+    },
+    purge() {
+      alert("Purge code runs now.")
+    }
   },
   data() {
     return {
       list: [],
+      selected: [],
       areMore: false,
       nextUrl: "",
-      loading: true
+      loading: true,
+      confirmState: null,
+      showAlert: false,
+      alertChoices: [],
+      alertDescription: "",
+      alertAction: null,
     };
   },
   mounted() {
@@ -101,7 +189,7 @@ export default {
 <style scoped>
 .modal {
   position: relative;
-  text-align: center;
+  text-align: left;
   width: 55vw;
   height: calc(90vh - 48px);
   margin: auto;
@@ -114,7 +202,7 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1;
+  z-index: 2;
 }
 
 .table-container {
@@ -123,10 +211,15 @@ export default {
   overflow-x: hidden;
   padding-right: 0.3em;
   padding-bottom: 0.2em;
+  width: calc(100% - 0.5em);
 }
 
-td:first-child {
-  width: 1px;
+table {
+  width: 100%;
+}
+
+input[type="checkbox"] {
+  margin: 0;
 }
 
 h3 {
@@ -134,10 +227,36 @@ h3 {
   margin-bottom: 0.1em;
 }
 
-a.button-close {
+.top-buttons {
   float: right;
   position: absolute;
   top: 10px;
   right: 10px;
+}
+
+.top-buttons a {
+  margin-left: 5px;
+}
+
+a:not(.button) {
+  color: #ca0029;
+}
+
+.cell-content {
+  width: 20vw;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.modal-shade {
+  height: calc(100vh - 48px);
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+  position: absolute;
+  top: 48px;
+  left: 0;
+  z-index: 1;
 }
 </style>
