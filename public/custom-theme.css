@@ -5,6 +5,13 @@ input[type="reset"],
 input[type="submit"] {
   background-color: #ca0029 !important;
   border: 0.1rem solid #ca0029 !important;
+  transition: 0.2s;
+}
+
+a.button:hover {
+  background: #ca0029 !important;
+  color: white !important;
+  transition: 0.2s;
 }
 
 .button[disabled]:focus,

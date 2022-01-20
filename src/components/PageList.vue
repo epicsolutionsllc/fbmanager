@@ -19,15 +19,18 @@
         </tr>
       </table>
     </div>
+    <ContentLoader v-if="loading" />
   </main>
 </template>
 
 <script>
 import PostList from './PostList.vue';
+import ContentLoader from './ContentLoader.vue';
 export default {
   name: "PageList",
   components: {
-    PostList
+    PostList,
+    ContentLoader
   },
   props: {
     token: String,
@@ -44,7 +47,8 @@ export default {
   data() {
     return {
       list: [],
-      postSelected: null
+      postSelected: null,
+      loading: true
     };
   },
   mounted() {
@@ -59,6 +63,7 @@ export default {
       })
       .then((json) => {
         this.list = json.data;
+        this.loading = false;
       });
   },
 };

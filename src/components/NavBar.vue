@@ -31,6 +31,7 @@ export default {
   line-height: 1em;
   background: white;
   box-shadow: 0px 7px 20px 0 rgb(0 0 0 / 35%);
+  height: 48px;
 }
 
 img {
