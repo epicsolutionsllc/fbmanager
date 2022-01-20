@@ -8,7 +8,10 @@
   />
   <div class="modal">
     <div class="top-buttons">
-      <a @click="confirmAction('purge')" class="button button-outline" v-if="selected.length > 0"
+      <a
+        @click="confirmAction('purge')"
+        class="button button-outline"
+        v-if="selected.length > 0"
         >Purge</a
       >
       <a
@@ -25,8 +28,8 @@
       <table>
         <tr>
           <th></th>
-          <th>Name</th>
-          <th>Identifier</th>
+          <th>Title</th>
+          <th>Date</th>
         </tr>
         <tr v-for="(post, i) in list" :key="post.id">
           <td>
@@ -43,14 +46,20 @@
             </div>
           </td>
           <td>
-            <div class="cell-content" :title="post.id">{{ post.id }}</div>
+            <div
+              class="cell-content"
+              :title="post.created_time"
+              @click="copyId(post.id)"
+            >
+              {{ new Date(post.created_time).toLocaleDateString() }}
+            </div>
           </td>
         </tr>
       </table>
       <ContentLoader v-if="loading" />
       <a
         @click="checkForMore"
-        class="button button-outline"
+        class="button button-outline load-more"
         v-if="!loading && areMore"
         >Load More</a
       >
@@ -126,7 +135,8 @@ export default {
         this.showAlert = true;
       } else if (a == "purge") {
         this.alertChoices = ["Go back", "Continue"];
-        this.alertDescription = "This will delete ALL POSTS older than the most recent selected post.  Proceed with extreme caution.";
+        this.alertDescription =
+          "This will delete ALL POSTS older than the most recent selected post.  Proceed with extreme caution.";
         this.showAlert = true;
       }
     },
@@ -138,14 +148,33 @@ export default {
         this.deletePosts();
       } else if (a == "purge" && c == 1) {
         this.purge();
+      } else if (a == "error" && c == 0) {
+        window.open("mailto:micah.lindley@epicsolutions.com?subject=Error%20on%20FBManager&body=I%20encountered%20an%20error%20on%20FBManager:%20" + encodeURIComponent(this.error))
       }
     },
     deletePosts() {
-      alert("Delete code runs now.");
+      this.selected.forEach((item) => {
+        fetch(`/api/deletepost?token=${this.page.access_token}&post=${this.list[item].id}`)
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            if (data.error) {
+              this.error = data.error.code;
+              this.alertAction = "error";
+              this.alertChoices = ["Report", "Okay"];
+              this.alertDescription = "Got an error: " + data.error.message;
+            }
+            this.showAlert = true;
+          });
+      });
     },
     purge() {
-      alert("Purge code runs now.")
-    }
+      alert("Purge code runs now.");
+    },
+    copyId(id) {
+      navigator.clipboard.writeText(id);
+    },
   },
   data() {
     return {
@@ -159,6 +188,7 @@ export default {
       alertChoices: [],
       alertDescription: "",
       alertAction: null,
+      error: null
     };
   },
   mounted() {
@@ -247,6 +277,11 @@ a:not(.button) {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.load-more {
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
 
 .modal-shade {

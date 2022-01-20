@@ -1,6 +1,6 @@
 <template>
   <div class="alert">
-    <h3>Confirm</h3>
+    <h3>{{ action }}</h3>
     <p>{{ description }}</p>
     <div class="choices">
       <a class="button button-outline" @click="$emit('choice', {val: 0, action})">{{
@@ -58,5 +58,9 @@ a.button {
   top: 48px;
   left: 0;
   z-index: 3;
+}
+
+h3 {
+  text-transform: capitalize;
 }
 </style>
