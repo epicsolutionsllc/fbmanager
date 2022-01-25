@@ -149,7 +149,7 @@ export default {
       } else if (a == "purge" && c == 1) {
         this.purge();
       } else if (a == "error" && c == 0) {
-        window.open("mailto:micah.lindley@epicsolutions.com?subject=Error%20on%20FBManager&body=I%20encountered%20an%20error%20on%20FBManager:%20" + encodeURIComponent(this.error))
+        window.open("mailto:micah.lindley@epicsolutions.com?subject=Error on FBManager&body=I encountered an error on FBManager: " + this.error)
       }
     },
     deletePosts() {
@@ -163,7 +163,7 @@ export default {
               this.error = data.error.code;
               this.alertAction = "error";
               this.alertChoices = ["Report", "Okay"];
-              this.alertDescription = "Got an error: " + data.error.message;
+              this.alertDescription = data.error.message;
             }
             this.showAlert = true;
           });
