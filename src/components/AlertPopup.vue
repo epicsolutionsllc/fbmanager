@@ -1,7 +1,7 @@
 <template>
   <div class="alert">
     <h3>{{ action }}</h3>
-    <p>{{ description }}</p>
+    <p v-html="description"></p>
     <div class="choices">
       <a class="button button-outline" @click="$emit('choice', {val: 0, action})">{{
         choices[0]
@@ -30,6 +30,7 @@ export default {
   position: relative;
   text-align: left;
   width: max-content;
+  max-width: 85vw;
   padding: 1.5em;
   border-radius: 5px;
   background: white;
@@ -55,12 +56,22 @@ a.button {
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(2px);
   position: absolute;
-  top: 48px;
+  top: 0;
   left: 0;
   z-index: 3;
 }
 
 h3 {
   text-transform: capitalize;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

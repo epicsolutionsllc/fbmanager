@@ -70,4 +70,11 @@ footer {
 footer a {
   color: #ca0029;
 }
+body {
+  overflow: hidden;
+}
+
+.inline-link {
+  color: #ca0029;
+}
 </style>

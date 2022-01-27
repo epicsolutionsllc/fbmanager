@@ -1,5 +1,18 @@
 <template>
-  <PostList v-if="postSelected != null" :page="list[postSelected]" :userToken="token" @close="closePost" />
+  <transition name="slide">
+    <PostList
+      v-if="postSelected != null"
+      :page="list[postSelected]"
+      :userToken="token"
+      @close="closePost"
+    />
+  </transition>
+  <transition name="fade">
+    <div
+      class="modal-shade"
+      v-if="postSelected != null"
+    ></div>
+  </transition>
   <main>
     <h3>Page List</h3>
     <p>only pages that you have granted access to will appear</p>
@@ -12,7 +25,24 @@
         </tr>
         <tr v-for="(page, i) in list" :key="page.id">
           <td>
-            <a @click="openPost(i)" class="button button-outline">Edit</a>
+            <a
+              @click="openPost(i)"
+              class="button button-outline button-icon"
+              title="Edit posts on this page"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="2" x2="22" y2="6"></line>
+                <path d="M7.5 20.5L19 9l-4-4L3.5 16.5 2 22z"></path></svg
+            ></a>
           </td>
           <td>{{ page.name }}</td>
           <td>{{ page.id }}</td>
@@ -24,13 +54,13 @@
 </template>
 
 <script>
-import PostList from './PostList.vue';
-import ContentLoader from './ContentLoader.vue';
+import PostList from "./PostList.vue";
+import ContentLoader from "./ContentLoader.vue";
 export default {
   name: "PageList",
   components: {
     PostList,
-    ContentLoader
+    ContentLoader,
   },
   props: {
     token: String,
@@ -41,14 +71,15 @@ export default {
       this.postSelected = i;
     },
     closePost() {
+      console.log('Closing post')
       this.postSelected = null;
-    }
+    },
   },
   data() {
     return {
       list: [],
       postSelected: null,
-      loading: true
+      loading: true,
     };
   },
   mounted() {
@@ -101,5 +132,39 @@ a.button {
 h3 {
   line-height: 1;
   margin-bottom: 0.1em;
+}
+
+.slide-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.slide-leave-active {
+  transition: all 0.2s ease-in;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translate(-50%, 150%);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.modal-shade {
+  height: calc(100vh - 48px);
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+  position: absolute;
+  top: 48px;
+  left: 0;
+  z-index: 1;
 }
 </style>

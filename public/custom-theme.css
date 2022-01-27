@@ -93,3 +93,11 @@ textarea:focus,
 select:focus {
   border-color: #ca0029 !important;
 }
+
+.button-icon {
+  padding: 0 1.5rem !important;
+}
+
+.button-icon > svg {
+  transform: translateY(4px);
+}
