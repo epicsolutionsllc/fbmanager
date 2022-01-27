@@ -81,7 +81,9 @@
       <div class="table-container">
         <table>
           <tr>
-            <th></th>
+            <th>
+              <input type="checkbox" @change="selectAll($event)" />
+            </th>
             <th>Title</th>
             <th>Date</th>
           </tr>
@@ -92,7 +94,11 @@
             :class="selected.includes(i) ? 'selected' : ''"
           >
             <td>
-              <input type="checkbox" @change="selectPost(i, $event)" />
+              <input
+                type="checkbox"
+                @change="selectPost(i, $event)"
+                :checked="selected.includes(i)"
+              />
             </td>
             <td>
               <div
@@ -206,9 +212,18 @@ export default {
       if (e.target.checked) {
         this.selected.push(i);
       } else {
-        this.selected.pop(this.selected.indexOf(i));
+        this.selected.splice(this.selected.indexOf(i), 1);
       }
       console.log(this.selected);
+    },
+    selectAll(e) {
+      if (e.target.checked) {
+        this.list.forEach((item, i) => {
+          this.selected.push(i);
+        });
+      } else {
+        this.selected = [];
+      }
     },
     confirmAction(a) {
       this.alertAction = a;
@@ -253,8 +268,9 @@ export default {
               this.error = data.error.code;
               this.alertAction = "error";
               this.alertChoices = ["Report", "Okay"];
-              if (data.error.message.includes('created by the application')) {
-                data.error.message += '.  See <a href="https://stackoverflow.com/a/12885762/10806546" target="_blank" class="inline-link">this page</a> for more information.'
+              if (data.error.message.includes("created by the application")) {
+                data.error.message +=
+                  '.  See <a href="https://stackoverflow.com/a/12885762/10806546" target="_blank" class="inline-link">this page</a> for more information.';
               }
               this.alertDescription =
                 data.error.type + ": " + data.error.message;
@@ -269,11 +285,12 @@ export default {
     purge() {
       console.log(this.list.length, "list length");
       this.loading = true;
+      let first = Math.min(...this.selected);
       fetch(`/api/purge?token=${this.page.access_token}`, {
         method: "POST",
         body: JSON.stringify({
           list: this.list,
-          initial: this.list[this.selected[0]],
+          initial: this.list[first],
           nextPage: this.nextUrl,
         }),
       })
@@ -289,9 +306,9 @@ export default {
             this.showAlert = true;
           }
         });
-        this.list = [];
-        this.selected = [];
-        setTimeout(this.refreshPosts, 8500);
+      this.list = [];
+      this.selected = [];
+      setTimeout(this.refreshPosts, 8500);
     },
     copyId(id) {
       navigator.clipboard.writeText(id);
