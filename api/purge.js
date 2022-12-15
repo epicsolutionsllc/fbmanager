@@ -20,14 +20,16 @@ export default async function handler(req, res) {
         deleted = await deleted.json();
         if (
           deleted.error.message !=
-          "(#200) This post wasn't created by the application" && deleted.error.message != "(#200) Permissions error" && !deleted.error.message.contains('Unsupported delete request')
+            "(#200) This post wasn't created by the application" &&
+          deleted.error.message != "(#200) Permissions error" &&
+          !deleted.error.message.contains("Unsupported delete request")
         ) {
           res.status(403).send(deleted);
         } else {
-          console.log('Post not created by app.')
+          console.log("Post not created by app.");
         }
       } else {
-        console.log('Deleted post', post.message || post.story);
+        console.log("Deleted post", post.message || post.story);
       }
       if (i == list.length - 1) {
         console.log("Finished a page");
@@ -49,16 +51,14 @@ export default async function handler(req, res) {
   let firstIndex = list.findIndex((element) => {
     return element.id == initial.id;
   });
-  console.log(
-    `Will start deleting posts at index ${firstIndex}.`
-  );
-  if ((firstIndex == -1)) {
+  console.log(`Will start deleting posts at index ${firstIndex}.`);
+  if (firstIndex == -1) {
     res.status(401).send(401);
   }
   purge(list, nextPage, 6);
   /*
   let deleted = await fetch(
-    `https://graph.facebook.com/v12.0/${post}?access_token=${token}`,
+    `https://graph.facebook.com/v15.0/${post}?access_token=${token}`,
     {
       method: "DELETE"
     }

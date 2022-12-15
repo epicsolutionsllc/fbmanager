@@ -16,9 +16,9 @@ export default {
   methods: {
     logIn() {
       let app = `https://${window.location.host}/`;
-      let url = `https://www.facebook.com/v12.0/dialog/oauth?client_id=487272066091952&redirect_uri=${encodeURI(
+      let url = `https://www.facebook.com/v15.0/dialog/oauth?client_id=1790609924641634&redirect_uri=${encodeURI(
         app
-      )}&scope=pages_show_list,pages_read_engagement,pages_manage_posts,public_profile,pages_read_user_content`;
+      )}&scope=pages_show_list,pages_read_engagement,pages_manage_posts,pages_read_user_content`;
       window.location.replace(url);
     },
   },

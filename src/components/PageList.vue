@@ -8,10 +8,7 @@
     />
   </transition>
   <transition name="fade">
-    <div
-      class="modal-shade"
-      v-if="postSelected != null"
-    ></div>
+    <div class="modal-shade" v-if="postSelected != null"></div>
   </transition>
   <main>
     <h3>Page List</h3>
@@ -41,8 +38,8 @@
                 stroke-linejoin="round"
               >
                 <line x1="18" y1="2" x2="22" y2="6"></line>
-                <path d="M7.5 20.5L19 9l-4-4L3.5 16.5 2 22z"></path></svg
-            ></a>
+                <path d="M7.5 20.5L19 9l-4-4L3.5 16.5 2 22z"></path>
+                </svg></a>
           </td>
           <td>{{ page.name }}</td>
           <td>{{ page.id }}</td>
@@ -71,7 +68,7 @@ export default {
       this.postSelected = i;
     },
     closePost() {
-      console.log('Closing post')
+      console.log("Closing post");
       this.postSelected = null;
     },
   },

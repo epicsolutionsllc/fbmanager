@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 export default async function handler(req, res) {
   const { token, page } = req.query;
   let posts = await fetch(
-    `https://graph.facebook.com/v12.0/${page}/feed?access_token=${token}`
+    `https://graph.facebook.com/v15.0/${page}/feed?access_token=${token}`
   );
   posts = await posts.json();
   if (posts.length < 1) {
