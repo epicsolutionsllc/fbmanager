@@ -1,3 +1,10 @@
+/*
+   /API/GETUSERTOKEN DOCUMENTATION
+   ------------------------
+   Generates a user's Facebook auth token
+   Takes an OAuth redirect code and a redirect URL as URL parameters
+
+*/
 require("dotenv").config();
 const fetch = require("node-fetch");
 export default async function handler(req, res) {

@@ -1,3 +1,11 @@
+/*
+   /API/PURGE DOCUMENTATION
+   ------------------------
+   Deletes as many posts as possible before end of execution (10s)
+   Takes a page token as a URL parameter
+   Takes a list of posts, the first post, and a link to the next page of posts as a JSONified body
+
+*/
 const fetch = require("node-fetch");
 export default async function handler(req, res) {
   const { token } = req.query;

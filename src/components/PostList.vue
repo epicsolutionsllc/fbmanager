@@ -88,9 +88,9 @@ export default {
       this.list[i].selected = true;
     },
     refreshPosts() {
+      this.loading = true;
       this.list = [];
       this.selected = [];
-      this.loading = true;
       fetch(
         `/api/getposts?token=${this.page.access_token}&page=${this.page.id}`
       )
@@ -338,7 +338,7 @@ a:not(.button) {
 
 .cell-content {
   width: 20vw;
-  var(--bg-1)-space: nowrap;
+  white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }

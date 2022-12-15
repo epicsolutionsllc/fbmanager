@@ -99,6 +99,7 @@ export default {
     ContentLoader,
     AlertPopup
   },
+  emits: ["activity", "progress"],
   props: {
     token: String,
     id: String,
@@ -159,6 +160,9 @@ export default {
       }
     },
     deletePosts() {
+      this.$emit("activity", {
+        total: this.selected.length, finished: 0, name: `Deleting ${this.selected.length} posts...`
+      });
       this.selected.forEach((index) => {
         let listItem = this.syndicatedPosts[index];
         fetch(
@@ -168,6 +172,7 @@ export default {
             return res.json();
           })
           .then((data) => {
+            this.$emit("progress");
             if (data.error) {
               this.error = data.error.code;
               this.alertAction = "error";
@@ -223,6 +228,59 @@ export default {
       console.log("Closing post");
       this.pageSelected = null;
     },
+    refreshPosts() {
+      this.loading = true;
+      this.syndicatedPosts = [];
+      this.selected = [];
+      fetch(`/api/getpages?token=${this.token}&id=${this.id}`)
+        .then((response) => {
+          if (response.status == 200) {
+            return response.json();
+          } else {
+            return {};
+          }
+        })
+        .then((json) => {
+          this.pages = json.data;
+          this.$emit("activity", {
+            total: json.data.length, finished: 0, name: `Fetching posts from ${json.data.length} pages...`
+          })
+          this.pages.forEach((page, index) => {
+            fetch(
+              `/api/getposts?token=${page.access_token}&page=${page.id}`
+            )
+              .then((response) => {
+                if (response.status == 200) {
+                  return response.json();
+                } else {
+                  alert(`Recieved an error code: ${response.status}`);
+                  return {};
+                }
+              })
+              .then((json) => {
+                this.$emit("progress");
+                json.data.forEach((post) => {
+                  post.page = page.name;
+                  post.pageIndex = index;
+                })
+                if (index == this.pages.length - 1) {
+                  this.loading = false;
+                }
+                this.syndicatedPosts = [...this.syndicatedPosts, ...json.data]
+                if (json.paging.next) {
+                  this.areMore = true;
+                  this.nextUrls.push(json.paging.next);
+                }
+
+                this.syndicatedPosts.sort(function (a, b) {
+                  return new Date(b.created_time) - new Date(a.created_time);
+                });
+              });
+
+          })
+
+        });
+    }
   },
   data() {
     return {
@@ -241,52 +299,7 @@ export default {
     };
   },
   mounted() {
-    fetch(`/api/getpages?token=${this.token}&id=${this.id}`)
-      .then((response) => {
-        if (response.status == 200) {
-          return response.json();
-        } else {
-          return {};
-        }
-      })
-      .then((json) => {
-        this.pages = json.data;
-        this.pages.forEach((page, index) => {
-          fetch(
-            `/api/getposts?token=${page.access_token}&page=${page.id}`
-          )
-            .then((response) => {
-              if (response.status == 200) {
-                return response.json();
-              } else {
-                alert(`Recieved an error code: ${response.status}`);
-                return {};
-              }
-            })
-            .then((json) => {
-              json.data.forEach((post) => {
-                post.page = page.name;
-                post.pageIndex = index;
-              })
-              this.syndicatedPosts = [...this.syndicatedPosts, ...json.data];
-              console.log(this.syndicatedPosts);
-              if (json.paging.next) {
-                this.areMore = true;
-                this.nextUrls.push(json.paging.next);
-              }
-              if (index == this.pages.length - 1) {
-                this.loading = false;
-                this.syndicatedPosts.sort(function (a, b) {
-                  // Turn your strings into dates, and then subtract them
-                  // to get a value that is either negative, positive, or zero.
-                  return new Date(b.created_time) - new Date(a.created_time);
-                });
-              }
-            });
-
-        })
-
-      });
+    this.refreshPosts();
   },
 };
 </script>

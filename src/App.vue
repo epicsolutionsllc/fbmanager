@@ -1,5 +1,5 @@
 <template>
-  <NavBar :isLoggedIn="isLoggedIn" @logOut="logOut" />
+  <NavBar :isLoggedIn="isLoggedIn" @logOut="logOut" :activity="currentActivity" />
   <AuthModal v-if="!isLoggedIn" />
   <div v-else>
     <div class="tabs">
@@ -7,7 +7,7 @@
       <button :class="{ tab: true, activeTab: tab == 1 }" @click="tab = 1">Posts</button>
     </div>
     <PageList :token="token" :id="id" v-if="tab == 0" />
-    <AllPosts :token="token" :id="id" v-if="tab == 1" />
+    <AllPosts :token="token" :id="id" v-if="tab == 1" @activity="setActivity" @progress="progress" />
   </div>
   <footer>&copy; {{ new Date().getFullYear() }} Epic Cybernetics - built with <a href="https://vuejs.org"
       target="_blank">Vue.js</a></footer>
@@ -37,7 +37,8 @@ export default {
       isLoggedIn,
       token,
       id,
-      tab: 0
+      tab: 0,
+      currentActivity: null
     }
   },
   methods: {
@@ -45,6 +46,17 @@ export default {
       window.localStorage.removeItem("userToken");
       window.localStorage.removeItem("userId");
       window.location.reload();
+    },
+    setActivity(activity) {
+      this.currentActivity = activity;
+    },
+    progress() {
+      this.currentActivity.finished++;
+      if (this.currentActivity.finished >= this.currentActivity.total) {
+        setTimeout(() => {
+          this.currentActivity = null;
+        }, 500)
+      }
     }
   }
 }
