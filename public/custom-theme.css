@@ -101,3 +101,7 @@ select:focus {
 .button-icon > svg {
   transform: translateY(4px);
 }
+
+.selected {
+  background: rgb(255, 195, 195);
+}

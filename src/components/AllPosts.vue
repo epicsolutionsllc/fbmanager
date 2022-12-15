@@ -20,16 +20,16 @@
           <line x1="10" y1="11" x2="10" y2="17"></line>
           <line x1="14" y1="11" x2="14" y2="17"></line>
         </svg></a>
-      <!-- <a @click="confirmAction('purge')" class="button button-outline button-icon" v-if="selected.length > 0"
-        title="Purge as many old posts as possible"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
+      <a @click="confirmAction('purge')" class="button button-outline button-icon" v-if="selected.length == 1"
+        title="Purge all posts older than the selected one on this page"><svg xmlns="http://www.w3.org/2000/svg"
+          width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
           <path d="M11 12H3"></path>
           <path d="M16 6H3"></path>
           <path d="M16 18H3"></path>
           <path d="M19 10l-4 4"></path>
           <path d="M15 10l4 4"></path>
-        </svg></a> -->
+        </svg></a>
       <a @click="refreshPosts" class="button button-outline button-icon" title="Refresh post list">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -140,7 +140,7 @@ export default {
       } else if (a == "purge") {
         this.alertChoices = ["Go back", "Continue"];
         this.alertDescription =
-          "<b>Proceed with extreme caution.</b>  This will delete as many posts as possible older than the most recent selected post.";
+          "<b>Proceed with extreme caution.</b>  This will delete all the posts on this page that are older than the selected post.";
         this.showAlert = true;
       }
     },
@@ -192,32 +192,48 @@ export default {
       });
     },
     purge() {
-      console.log(this.syndicatedPosts.length, "list length");
+      function range(start, stop, step) {
+        var a = [start], b = start;
+        while (b < stop) {
+          a.push(b += step || 1);
+        }
+        return a;
+      }
+      this.$emit("activity", {
+        total: this.selected.length, finished: 0, name: `Purging ${this.syndicatedPosts.length - this.selected[0]} posts...`
+      });
+      this.selected = range(this.selected[0], this.syndicatedPosts.length);
       this.loading = true;
-      let first = Math.min(...this.selected);
-      fetch(`/api/purge?token=${this.page.access_token}`, {
-        method: "POST",
-        body: JSON.stringify({
-          list: this.syndicatedPosts,
-          initial: this.syndicatedPosts[first],
-          nextPage: this.nextUrl,
-        }),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          if (data.error) {
-            this.error = data.error.code;
-            this.alertAction = "error";
-            this.alertChoices = ["Report", "Okay"];
-            this.alertDescription = data.error.type + ": " + data.error.message;
-            this.showAlert = true;
-          }
-        });
-      this.syndicatedPosts = [];
-      this.selected = [];
-      setTimeout(this.refreshPosts, 8500);
+      this.selected.forEach((index) => {
+        let listItem = this.syndicatedPosts[index];
+        fetch(
+          `/api/deletepost?token=${this.pages[listItem.pageIndex].access_token}&post=${listItem.id}`
+        )
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            this.$emit("progress");
+            if (data.error) {
+              this.error = data.error.code;
+              this.alertAction = "error";
+              this.alertChoices = ["Report", "Okay"];
+              if (data.error.message.includes("created by the application")) {
+                data.error.message +=
+                  '.  See <a href="https://stackoverflow.com/a/12885762/10806546" target="_blank" class="inline-link">this page</a> for more information.';
+              }
+              this.alertDescription =
+                data.error.type + ": " + data.error.message;
+              this.showAlert = true;
+            }
+          });
+        if (index == this.syndicatedPosts.length - 1) {
+          this.syndicatedPosts = [];
+          this.selected = [];
+          this.loading = false;
+          this.refreshPosts();
+        }
+      });
     },
     openPage(name) {
       console.log(this.pages)
@@ -335,6 +351,21 @@ main {
   overflow-y: scroll;
   overflow-x: hidden;
   padding-right: 0.3em;
+}
+
+.cell-content {
+  width: 20vw;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+input[type="checkbox"] {
+  margin-left: 10px;
+}
+
+tr.selected {
+  background-color: rgb(255, 195, 195);
 }
 
 td:first-child {
