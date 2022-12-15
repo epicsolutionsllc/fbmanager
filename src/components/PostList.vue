@@ -1,79 +1,37 @@
 <template>
   <div class="post-list-wrapper">
-    <AlertPopup
-      v-if="showAlert"
-      :choices="alertChoices"
-      :description="alertDescription"
-      @choice="choose($event)"
-      :action="alertAction"
-    />
+    <AlertPopup v-if="showAlert" :choices="alertChoices" :description="alertDescription" @choice="choose($event)"
+      :action="alertAction" />
     <div class="modal">
       <div class="top-buttons">
-        <a
-          @click="confirmAction('delete')"
-          class="button button-outline button-icon"
-          v-if="selected.length > 0"
-          title="Delete all selected posts"
-          ><svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+        <a @click="confirmAction('delete')" class="button button-outline button-icon" v-if="selected.length > 0"
+          title="Delete all selected posts"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <polyline points="3 6 5 6 21 6"></polyline>
-            <path
-              d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
-            ></path>
+            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
             <line x1="10" y1="11" x2="10" y2="17"></line>
-            <line x1="14" y1="11" x2="14" y2="17"></line></svg></a>
-        <a
-          @click="confirmAction('purge')"
-          class="button button-outline button-icon"
-          v-if="selected.length > 0"
-          title="Purge as many old posts as possible"
-          ><svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg></a>
+        <a @click="confirmAction('purge')" class="button button-outline button-icon" v-if="selected.length > 0"
+          title="Purge as many old posts as possible"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <path d="M11 12H3"></path>
             <path d="M16 6H3"></path>
             <path d="M16 18H3"></path>
             <path d="M19 10l-4 4"></path>
             <path d="M15 10l4 4"></path>
-            </svg></a>
-        <a
-          @click="refreshPosts"
-          class="button button-outline button-icon"
-          title="Refresh post list"
-          >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round">
+          </svg></a>
+        <a @click="refreshPosts" class="button button-outline button-icon" title="Refresh post list">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 2v6h6"></path>
             <path d="M21 12A9 9 0 006 5.3L3 8"></path>
             <path d="M21 22v-6h-6"></path>
             <path d="M3 12a9 9 0 0015 6.7l3-2.7"></path>
           </svg>
-          </a>
+        </a>
         <a @click="$emit('close')" class="button button-close">Close</a>
       </div>
       <h3>Post List</h3>
@@ -87,47 +45,26 @@
             <th>Title</th>
             <th>Date</th>
           </tr>
-          <tr
-            v-for="(post, i) in list"
-            :key="post.id"
-            :data-key="i"
-            :class="selected.includes(i) ? 'selected' : ''"
-          >
+          <tr v-for="(post, i) in list" :key="post.id" :data-key="i" :class="selected.includes(i) ? 'selected' : ''">
             <td>
-              <input
-                type="checkbox"
-                @change="selectPost(i, $event)"
-                :checked="selected.includes(i)"
-              />
+              <input type="checkbox" @change="selectPost(i, $event)" :checked="selected.includes(i)" />
             </td>
             <td>
-              <div
-                class="cell-content"
-                :title="genTitle(post) + '\n\nClick to open in new tab'"
-              >
+              <div class="cell-content" :title="genTitle(post) + '\n\nClick to open in new tab'">
                 <a :href="`https://facebook.com/${post.id}`" target="_blank">{{
-                  genTitle(post)
+                    genTitle(post)
                 }}</a>
               </div>
             </td>
             <td>
-              <div
-                class="cell-content"
-                :title="post.created_time"
-                @click="copyId(post.id)"
-              >
+              <div class="cell-content" :title="post.created_time" @click="copyId(post.id)">
                 {{ new Date(post.created_time).toLocaleDateString() }}
               </div>
             </td>
           </tr>
         </table>
         <ContentLoader v-if="loading" />
-        <a
-          @click="checkForMore"
-          class="button button-outline load-more"
-          v-if="!loading && areMore"
-          >Load More</a
-        >
+        <a @click="checkForMore" class="button button-outline load-more" v-if="!loading && areMore">Load More</a>
       </div>
     </div>
   </div>
@@ -250,7 +187,7 @@ export default {
       } else if (a == "error" && c == 0) {
         window.open(
           "mailto:micah.lindley@epicsolutions.com?subject=Error on FBManager&body=I encountered an error on FBManager: " +
-            this.error
+          this.error
         );
       }
     },
@@ -320,9 +257,7 @@ export default {
       selected: [],
       areMore: false,
       nextUrl: "",
-      previousUrl: "",
       loading: true,
-      confirmState: null,
       showAlert: false,
       alertChoices: [],
       alertDescription: "",
@@ -358,7 +293,7 @@ export default {
   margin: auto;
   padding: 1.2em;
   border-radius: 5px;
-  background: white;
+  background: var(--bg-1);
   box-shadow: 0px 7px 20px 0 rgb(0 0 0 / 35%);
   top: 50%;
   transform: translateY(-50%);
@@ -398,12 +333,12 @@ h3 {
 }
 
 a:not(.button) {
-  color: #ca0029;
+  color: var(--accent);
 }
 
 .cell-content {
   width: 20vw;
-  white-space: nowrap;
+  var(--bg-1)-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }

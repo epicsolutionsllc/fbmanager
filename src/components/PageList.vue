@@ -1,11 +1,6 @@
 <template>
   <transition name="slide">
-    <PostList
-      v-if="postSelected != null"
-      :page="list[postSelected]"
-      :userToken="token"
-      @close="closePost"
-    />
+    <PostList v-if="postSelected != null" :page="list[postSelected]" :userToken="token" @close="closePost" />
   </transition>
   <transition name="fade">
     <div class="modal-shade" v-if="postSelected != null"></div>
@@ -13,7 +8,7 @@
   <main>
     <h3>Page List</h3>
     <p>only pages that you have granted access to will appear</p>
-    <div class="table-container">
+    <div class="table-container" v-if="!loading">
       <table>
         <tr>
           <th></th>
@@ -22,24 +17,12 @@
         </tr>
         <tr v-for="(page, i) in list" :key="page.id">
           <td>
-            <a
-              @click="openPost(i)"
-              class="button button-outline button-icon"
-              title="Edit posts on this page"
-              ><svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
+            <a @click="openPost(i)" class="button button-outline button-icon" title="Edit posts on this page"><svg
+                xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="2" x2="22" y2="6"></line>
                 <path d="M7.5 20.5L19 9l-4-4L3.5 16.5 2 22z"></path>
-                </svg></a>
+              </svg></a>
           </td>
           <td>{{ page.name }}</td>
           <td>{{ page.id }}</td>
@@ -80,7 +63,7 @@ export default {
     };
   },
   mounted() {
-    fetch(`/api/getvalidpages?token=${this.token}&id=${this.id}`)
+    fetch(`/api/getpages?token=${this.token}&id=${this.id}`)
       .then((response) => {
         if (response.status == 200) {
           return response.json();
@@ -104,11 +87,12 @@ main {
   width: 95vw;
   height: calc(90vh - 48px);
   margin: auto;
-  margin-top: 2.5vh;
+  margin-top: 0;
   padding: 1.2em;
   border-radius: 5px;
-  background: white;
+  background: var(--bg-1);
   box-shadow: 0px 7px 20px 0 rgb(0 0 0 / 35%);
+  transform: translateY(-1rem);
 }
 
 .table-container {

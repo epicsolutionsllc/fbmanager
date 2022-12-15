@@ -21,7 +21,7 @@ export default {
 .loader {
   width: 20px;
   height: 20px;
-  background: #ca0029;
+  background: var(--accent);
   border-radius: 30px;
   margin: auto;
   animation: load 1s infinite;
@@ -33,7 +33,7 @@ export default {
   content: ' ';
   width: 20px;
   height: 20px;
-  background: #ca0029;
+  background: var(--accent);
   border-radius: 30px;
   margin: auto;
   animation: load 1s 1s linear infinite;
@@ -44,6 +44,7 @@ export default {
     transform: scale(1);
     opacity: 1;
   }
+
   100% {
     transform: scale(1.7);
     opacity: 0;

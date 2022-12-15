@@ -1,20 +1,30 @@
 <template>
-<NavBar :isLoggedIn="isLoggedIn" @logOut="logOut" />
-<AuthModal v-if="!isLoggedIn" />
-<PageList :token="token" :id="id" v-else />
-<footer>&copy; {{ new Date().getFullYear() }} Epic Cybernetics - built with <a href="https://vuejs.org" target="_blank">Vue.js</a></footer>
+  <NavBar :isLoggedIn="isLoggedIn" @logOut="logOut" />
+  <AuthModal v-if="!isLoggedIn" />
+  <div v-else>
+    <div class="tabs">
+      <button :class="{ tab: true, activeTab: tab == 0 }" @click="tab = 0">Pages</button>
+      <button :class="{ tab: true, activeTab: tab == 1 }" @click="tab = 1">Posts</button>
+    </div>
+    <PageList :token="token" :id="id" v-if="tab == 0" />
+    <AllPosts :token="token" :id="id" v-if="tab == 1" />
+  </div>
+  <footer>&copy; {{ new Date().getFullYear() }} Epic Cybernetics - built with <a href="https://vuejs.org"
+      target="_blank">Vue.js</a></footer>
 </template>
 
 <script>
 import NavBar from './components/NavBar.vue';
 import AuthModal from './components/AuthModal.vue';
 import PageList from './components/PageList.vue';
+import AllPosts from './components/AllPosts.vue';
 export default {
   name: 'App',
   components: {
     NavBar,
     AuthModal,
-    PageList
+    PageList,
+    AllPosts
   },
   data() {
     let isLoggedIn = window.localStorage.getItem("userToken") != undefined;
@@ -26,7 +36,8 @@ export default {
     return {
       isLoggedIn,
       token,
-      id
+      id,
+      tab: 0
     }
   },
   methods: {
@@ -40,6 +51,17 @@ export default {
 </script>
 
 <style>
+:root {
+  --accent: #ca0029;
+  --bg-1: #fff;
+  --text-1: #222;
+}
+
+body {
+  background-color: var(--bg-1);
+  color: var(--text-1) !important;
+}
+
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -63,18 +85,50 @@ footer {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #ca0029;
+  background-color: var(--accent);
   border-radius: 100px;
 }
 
 footer a {
-  color: #ca0029;
+  color: var(--accent);
 }
+
 body {
   overflow: hidden;
 }
 
 .inline-link {
-  color: #ca0029;
+  color: var(--accent);
+}
+
+.tabs {
+  margin-left: 2.5vw;
+  margin-top: 1.5vh;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
+.tab {
+  margin-bottom: 0;
+  padding-bottom: 1rem;
+  height: auto;
+  margin-right: 0.5rem;
+  background: var(--bg-1) !important;
+  color: var(--accent);
+}
+
+.tab:hover {
+  color: initial;
+}
+
+.activeTab {
+  background-color: var(--accent) !important;
+  color: var(--bg-1) !important;
+}
+
+.tab:focus {
+  color: var(--accent);
 }
 </style>

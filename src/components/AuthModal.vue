@@ -62,7 +62,7 @@ export default {
   margin: 3em auto;
   padding: 1.2em;
   border-radius: 5px;
-  background: white;
+  background: var(--bg-1);
   box-shadow: 0px 7px 20px 0 rgb(0 0 0 / 35%);
 }
 </style>

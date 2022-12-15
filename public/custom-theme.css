@@ -3,14 +3,14 @@ button,
 input[type="button"],
 input[type="reset"],
 input[type="submit"] {
-  background-color: #ca0029 !important;
-  border: 0.1rem solid #ca0029 !important;
+  background-color: var(--accent) !important;
+  border: 0.1rem solid var(--accent) !important;
   transition: 0.2s;
 }
 
 a.button:hover {
-  background: #ca0029 !important;
-  color: white !important;
+  background: var(--accent) !important;
+  color: var(--bg-1) !important;
   transition: 0.2s;
 }
 
@@ -24,8 +24,8 @@ input[type="reset"][disabled]:focus,
 input[type="reset"][disabled]:hover,
 input[type="submit"][disabled]:focus,
 input[type="submit"][disabled]:hover {
-  background-color: #ca0029 !important;
-  border-color: #ca0029 !important;
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
 }
 
 .button.button-outline,
@@ -33,7 +33,7 @@ button.button-outline,
 input[type="button"].button-outline,
 input[type="reset"].button-outline,
 input[type="submit"].button-outline {
-  color: #ca0029 !important;
+  color: var(--accent) !important;
   background: transparent !important;
 }
 
@@ -47,7 +47,7 @@ input[type="reset"].button-outline[disabled]:focus,
 input[type="reset"].button-outline[disabled]:hover,
 input[type="submit"].button-outline[disabled]:focus,
 input[type="submit"].button-outline[disabled]:hover {
-  color: #ca0029 !important;
+  color: var(--accent) !important;
 }
 
 .button.button-clear,
@@ -55,7 +55,7 @@ button.button-clear,
 input[type="button"].button-clear,
 input[type="reset"].button-clear,
 input[type="submit"].button-clear {
-  color: #ca0029 !important;
+  color: var(--accent) !important;
 }
 
 .button.button-clear[disabled]:focus,
@@ -68,11 +68,11 @@ input[type="reset"].button-clear[disabled]:focus,
 input[type="reset"].button-clear[disabled]:hover,
 input[type="submit"].button-clear[disabled]:focus,
 input[type="submit"].button-clear[disabled]:hover {
-  color: #ca0029 !important;
+  color: var(--accent) !important;
 }
 
 pre {
-  border-left: 0.3rem solid #ca0029 !important;
+  border-left: 0.3rem solid var(--accent) !important;
 }
 
 input[type="color"]:focus,
@@ -91,7 +91,7 @@ input[type="week"]:focus,
 input:not([type]):focus,
 textarea:focus,
 select:focus {
-  border-color: #ca0029 !important;
+  border-color: var(--accent) !important;
 }
 
 .button-icon {

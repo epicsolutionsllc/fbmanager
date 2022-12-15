@@ -3,13 +3,13 @@
     <h3>{{ action }}</h3>
     <p v-html="description"></p>
     <div class="choices">
-      <a class="button button-outline" @click="$emit('choice', {val: 0, action})">{{
-        choices[0]
+      <a class="button button-outline" @click="$emit('choice', { val: 0, action })">{{
+          choices[0]
       }}</a>
-      <a class="button" @click="$emit('choice', {val: 1, action})">{{ choices[1] }}</a>
+      <a class="button" @click="$emit('choice', { val: 1, action })">{{ choices[1] }}</a>
     </div>
   </div>
-  <div class="alert-shade" @click="$emit('choice', {val: 0, action})"></div>
+  <div :class="{ alertShade: true, contained: contained }" @click="$emit('choice', { val: 0, action })"></div>
 </template>
 
 <script>
@@ -19,6 +19,7 @@ export default {
     choices: Array,
     description: String,
     action: String,
+    contained: Boolean
   },
   emits: ["choice"],
 };
@@ -33,7 +34,7 @@ export default {
   max-width: 85vw;
   padding: 1.5em;
   border-radius: 5px;
-  background: white;
+  background: var(--bg-1);
   box-shadow: 0px 7px 20px 0 rgb(0 0 0 / 35%);
   position: absolute;
   top: 50%;
@@ -43,14 +44,14 @@ export default {
 }
 
 a:not(.button) {
-  color: #ca0029;
+  color: var(--accent);
 }
 
 a.button {
   margin-right: 5px;
 }
 
-.alert-shade {
+.alertShade {
   height: calc(100vh - 48px);
   width: 100%;
   background: rgba(0, 0, 0, 0.7);
@@ -59,6 +60,11 @@ a.button {
   top: 0;
   left: 0;
   z-index: 3;
+}
+
+.contained {
+  height: calc(100vh - 16rem);
+  border-radius: 0.5em;
 }
 
 h3 {
