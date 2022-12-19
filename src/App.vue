@@ -1,5 +1,5 @@
 <template>
-  <NavBar :isLoggedIn="isLoggedIn" @logOut="logOut" :activity="currentActivity" />
+  <NavBar :isLoggedIn="isLoggedIn" @logOut="logOut" :activity="{ ...currentActivity, finished: activityProgress }" />
   <AuthModal v-if="!isLoggedIn" />
   <div v-else>
     <div class="tabs">
@@ -38,7 +38,8 @@ export default {
       token,
       id,
       tab: 0,
-      currentActivity: null
+      currentActivity: null,
+      activityProgress: null
     }
   },
   methods: {
@@ -49,12 +50,16 @@ export default {
     },
     setActivity(activity) {
       this.currentActivity = activity;
+      if (this.currentActivity.finished) {
+        this.activityProgress = this.currentActivity.finished;
+      }
     },
     progress() {
-      this.currentActivity.finished++;
-      if (this.currentActivity.finished >= this.currentActivity.total) {
+      this.activityProgress++;
+      if (this.activityProgress >= this.currentActivity.total) {
         setTimeout(() => {
           this.currentActivity = null;
+          this.activityProgress = null;
         }, 500)
       }
     }

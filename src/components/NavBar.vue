@@ -3,7 +3,7 @@
     <img src="../assets/epic.svg">
     <div class="activity-parent">
       <transition name="fade">
-        <div v-if="activity">
+        <div v-if="activity.name && activity.finished && activity.total">
           <p class="activity-name">{{ activity.name }}</p>
           <div class="progress-bar">
             <span :style="`width: ${(activity.finished / activity.total) * 100}%;`"></span>

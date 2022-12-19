@@ -192,6 +192,7 @@ export default {
       });
     },
     purge() {
+      let success = 0, failed = 0;
       function range(start, stop, step) {
         var a = [start], b = start;
         while (b < stop) {
@@ -200,12 +201,13 @@ export default {
         return a;
       }
       this.$emit("activity", {
-        total: this.selected.length, finished: 0, name: `Purging ${this.syndicatedPosts.length - this.selected[0]} posts...`
+        total: this.selected.length, finished: 0, name: `Purging ${this.selected[0]} posts...`
       });
-      this.selected = range(this.selected[0], this.syndicatedPosts.length);
+      this.selected = range(this.selected[0], this.syndicatedPosts.length - 1);
       this.loading = true;
       this.selected.forEach((index) => {
         let listItem = this.syndicatedPosts[index];
+        console.log(listItem)
         fetch(
           `/api/deletepost?token=${this.pages[listItem.pageIndex].access_token}&post=${listItem.id}`
         )
@@ -213,26 +215,23 @@ export default {
             return res.json();
           })
           .then((data) => {
-            this.$emit("progress");
             if (data.error) {
+              failed++;
               this.error = data.error.code;
-              this.alertAction = "error";
-              this.alertChoices = ["Report", "Okay"];
-              if (data.error.message.includes("created by the application")) {
-                data.error.message +=
-                  '.  See <a href="https://stackoverflow.com/a/12885762/10806546" target="_blank" class="inline-link">this page</a> for more information.';
-              }
-              this.alertDescription =
-                data.error.type + ": " + data.error.message;
-              this.showAlert = true;
+            } else {
+              success++;
+            }
+            this.$emit("activity", {
+              total: this.selected.length, name: `Purged ${success} out of ${this.selected.length} posts - ${failed} failed`
+            });
+            this.$emit("progress");
+            if ((success + failed) == this.selected.length - 1) {
+              this.syndicatedPosts = [];
+              this.selected = [];
+              this.loading = false;
+              this.refreshPosts();
             }
           });
-        if (index == this.syndicatedPosts.length - 1) {
-          this.syndicatedPosts = [];
-          this.selected = [];
-          this.loading = false;
-          this.refreshPosts();
-        }
       });
     },
     openPage(name) {
